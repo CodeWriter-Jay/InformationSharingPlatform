@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/layui/css/layui.css">
+    <script src="/src/layui/layui.js"></script>
+    <link rel="stylesheet" href="/src/css/admin-add.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <title>预约申请</title>
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="login-form">
+                <form class="layui-form" id="register-form">
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>姓名</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="nickName" required lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>电话</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="userPhone" lay-verify="phone" placeholder="电话" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>邮箱</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="email" lay-verify="email" placeholder="邮箱" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label for="repass" class="layui-col-xs3">
+                                <span style="color:#FF5722;">*</span>处理器（核）
+                            </label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="number" name="handler" required lay-verify="required" placeholder="处理器" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>内存（G）</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="number" name="memory" required lay-verify="required" placeholder="内存" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label for="repass" class="layui-col-xs3">
+                                <span style="color:#FF5722;">*</span>CPU
+                            </label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="cpu" required lay-verify="required" placeholder="CPU" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>硬盘</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="hardPan" required lay-verify="required" placeholder="硬盘" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label for="repass" class="layui-col-xs3">
+                                <span style="color:#FF5722;">*</span>显卡
+                            </label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="gpu" required lay-verify="required" placeholder="显卡" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>开始时间</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input readonly type="text" name="startTime" required lay-verify="required" placeholder="开始时间" autocomplete="off" class="layui-input" id="inTime">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>结束时间</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input readonly type="text" name="endTime" required lay-verify="required" placeholder="结束时间" autocomplete="off" class="layui-input" id="leaveTime">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row" style="display: flex;
+                    align-items: center;
+                    justify-content: center;">
+                        <button class="layui-btn layui-btn-normal layui-col-xs3" lay-submit lay-filter="apply">提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary layui-col-xs3">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script src="/src/js/utils.js"></script>
+<script>
+    let userId = 0;
+    let id = 0;
+    $(() => {
+        userId = getQueryVariable('userId');
+        if (!userId) {
+            $("body").html(`<h1>未知错误！</h1>`);
+            return;
+        }
+        userId = parseInt(userId);
+
+        id = getQueryVariable('id');
+        if (!id) {
+            $("body").html(`<h1>未知错误！</h1>`);
+            return;
+        }
+        id = parseInt(id);
+        layui.use(['form', 'laydate'], function() {
+            var form = layui.form;
+            let laydate = layui.laydate;
+
+            form.on('submit(apply)', function(data) {
+                data.field.userId = userId;
+                data.field.deviceId = id;
+                console.log(data.field);
+                $.ajax({
+                    url: baseURL + "/insert/order",
+                    data: data.field,
+                    method: "post",
+                    headers: {
+                        'Authorization': "bearer"
+                    },
+                    success(res) {
+                        layer.alert("预约成功！请等待管理人员同意", {
+                            icon: 6
+                        }, function(index) {
+                            layer.close(index);
+                            parent.window.location.reload();
+                        });
+                    },
+                    error(err) {
+                        alert(err.responseJSON.message);
+                        console.log(err);
+                    }
+                })
+                return false;
+            });
+
+            laydate.render({
+                elem: '#inTime',
+                format: 'yyyy-MM-dd HH:mm:ss',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#leaveTime',
+                format: 'yyyy-MM-dd HH:mm:ss',
+                trigger: 'click'
+            });
+        });
+    })
+</script>

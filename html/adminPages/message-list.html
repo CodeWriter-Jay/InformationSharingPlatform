@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>留言列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+    <link rel="stylesheet" href="/src/css/font.css">
+    <link rel="stylesheet" href="/src/css/xadmin.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/src/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/src/js/xadmin.js"></script>
+    <link rel="stylesheet" href="/src/css/user-edit.css">
+</head>
+
+<body>
+    <div class="edit-form-div">
+        <form class="layui-form" id="editForm" lay-filter="editForm" style="width: 100%;">
+            <div class="layui-row">
+                <div class="layui-col-xs4">
+                    <label class="layui-col-xs3">设备名称</label>
+                    <div class="layui-input-inline layui-col-xs9">
+                        <select name="deviceId" lay-verify="required" id="deviceList">
+                          </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4">
+                    <label class="layui-col-xs3">设备状态</label>
+                    <div class="layui-input-inline layui-col-xs9">
+                        <input type="radio" name="lookOver" value="true" title="已读" checked>
+                        <input type="radio" name="lookOver" value="false" title="未读">
+                    </div>
+                </div>
+                <div class="layui-col-xs4">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="check">查询</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table class="layui-table">
+        <colgroup>
+            <col width="100">
+            <col width="100">
+            <col width="100">
+            <col width="100">
+            <col>
+            <col width="200">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>留言id</th>
+                <th>用户姓名</th>
+                <th>电话</th>
+                <th>邮箱</th>
+                <th>留言内容</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</body>
+
+</html>
+
+<script src="/src/js/utils.js"></script>
+<script>
+    (() => {
+        $.ajax({
+            url: baseURL + "/get/device/page",
+            data: {
+                "sort": ["id,asc"]
+            },
+            method: "get",
+            headers: HEADERS,
+            success(data) {
+                let deviceList = '<option value=""></option>';
+                data.data.forEach((element, index) => {
+                    deviceList += `<option value="${element.id}">${element.deviceName}</option>`
+                });
+                $("#deviceList").html(deviceList);
+                layui.use('form', () => {
+                    let form = layui.form;
+
+                    form.render('select');
+                })
+            }
+        });
+    })()
+    layui.use(['form', 'layer'], function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(check)', function(data) {
+            $.ajax({
+                url: baseURL + "/get/interaction/device",
+                data: data.field,
+                headers: HEADERS,
+                success(res) {
+                    let tableDataRow = "";
+                    res.data.content.forEach(element => {
+                        tableDataRow += `<tr>
+                    <td>` + element.id + `</td>
+                    <td>` + element.userName + `</td>
+                    <td>` + element.phone + `</td>
+                    <td>` + element.email + `</td>
+                    <td>` + element.message + `</td>
+                    <td>
+                    ` + (() => {
+                            console.log(typeof data.field.lookOver)
+                            let result = ''
+                            if (data.field.lookOver == "false") {
+                                result = `<div class="layui-btn-group">
+                                    <button type="button" class="layui-btn layui-btn-normal" onclick="messageHandle(this)">已读</button>
+                                    </div>`
+                            }
+                            return result;
+                        })() + `
+                </td>
+                  </tr>`
+                    });
+                    $("#tableBody").html(tableDataRow);
+                }
+            })
+            return false;
+        });
+    });
+
+    function messageHandle(node) {
+        let id = $(node).parent().parent().parent().find("td").eq(0).text();
+        $.ajax({
+            url: baseURL + "/update/interaction",
+            data: {
+                id,
+                "lookOver": true
+            },
+            method: "put",
+            headers: HEADERS,
+            success(res) {
+                layer.alert("操作成功！", {
+                    icon: 6
+                }, function(index) {
+                    layer.close(index);
+                    window.location.reload();
+                });
+            }
+        });
+    }
+</script>

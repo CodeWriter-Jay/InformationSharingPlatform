@@ -1,0 +1,359 @@
+@import "/src/css/base.css";
+body {
+    margin: 0 0 40px 0;
+    padding: 0;
+}
+
+.nav-bar {
+    height: 150px;
+    background-image: url(../images/背景.png);
+    padding: 0 20px;
+}
+
+.nav-bar>div>div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+}
+
+.nav-bar h1 {
+    display: inline;
+    font-family: "KaiTi_GB: 2312";
+    font-style: italic;
+    font-size: 36px;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+    letter-spacing: 8px;
+    vertical-align: middle;
+}
+
+.search-bar {
+    vertical-align: middle;
+    box-sizing: border-box;
+    color: #333;
+}
+
+.search-box {
+    display: inline;
+    width: 70%;
+}
+
+.search-btn {
+    width: 25%;
+    height: 38px;
+    background-color: rgb(30, 159, 255);
+}
+
+.brief-intro {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: "KaiTi_GB: 2312";
+}
+
+.brief-intro h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.brief-intro p {
+    text-indent: 2em;
+    font-family: "KaiTi_GB: 2312";
+    font-weight: normal;
+    text-align: left;
+    letter-spacing: 3px;
+    line-height: 140%;
+    font-size: 15px;
+}
+
+.brief-intro a {
+    color: #337ab7;
+    text-decoration: none;
+}
+
+.brief-intro .intro-detail {
+    text-align: end;
+    letter-spacing: 3px;
+    font-size: 15px;
+}
+
+.login-btns {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(50, 115, 196);
+}
+
+.login-btns h1 {
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+    background-color: rgb(50, 115, 196);
+    font-size: 25px;
+    color: white;
+    text-align: center;
+}
+
+.login-btns a {
+    color: rgb(50, 115, 196);
+    font-size: 18px;
+    margin: 45px !important;
+    display: block;
+    text-align: center;
+    border: rgb(50, 115, 196) 1px solid;
+    border-radius: 5px;
+}
+
+.bottom-nav-bar>ul {
+    background-color: rgb(50, 115, 196);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottom-nav-bar>ul li {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bottom-nav-bar>ul li:hover {
+    color: #fff;
+}
+
+.bottom-nav-bar .layui-this,
+.layui-this:after {
+    color: #fff !important;
+    border-bottom: 2px solid white !important;
+}
+
+marquee {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    background-color: rgb(50, 115, 196);
+    letter-spacing: 10px;
+    color: white;
+    font-size: 18px;
+    line-height: 40px;
+    font-family: serif;
+}
+
+.bottom-nav-content {
+    text-align: center;
+}
+
+.bottom-nav-content blockquote {
+    text-align: left;
+    border-color: rgb(179, 216, 255);
+    font-size: 20px;
+    letter-spacing: 2px;
+    position: relative;
+}
+
+.bottom-nav-content blockquote a {
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.equipment-info {
+    text-align: center;
+}
+
+.equipment-info .equipment {
+    display: block;
+    border: rgb(50, 115, 196) solid 1px;
+}
+
+.equipment-info .equipment>div {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.equipment-info img {
+    width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: auto;
+}
+
+.bottom-nav-content>div>h1 {
+    font-size: 40px;
+    font-family: cursive;
+    color: rgb(61, 57, 57);
+    font-weight: bold;
+    letter-spacing: 5px;
+    display: inline-block;
+    margin: 20px;
+}
+
+.bottom-nav-content>div>h1::before {
+    content: "";
+    width: 300px;
+    height: 4px;
+    background-color: rgb(61, 57, 57);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 30px;
+}
+
+.bottom-nav-content>div>h1::after {
+    content: "";
+    width: 300px;
+    height: 4px;
+    background-color: rgb(61, 57, 57);
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
+}
+
+.bottom-nav-content>div>p {
+    text-align: left;
+    text-indent: 2em;
+    letter-spacing: 4px;
+    font-size: 20px;
+    font-family: sans-serif;
+    color: black;
+    margin: 10px 5%;
+    line-height: 200%;
+}
+
+.bottom-nav-content>div>ul {
+    margin-left: 24%;
+    display: block;
+}
+
+.bottom-nav-content>div>ul li {
+    display: list-item;
+    text-align: left;
+    font-size: 20px;
+    line-height: 200%;
+}
+
+.bottom-nav-content>div>ul a,
+#loginMark a {
+    color: #337ab7;
+    letter-spacing: 4px;
+}
+
+.bottom-nav-content>div>ul a:hover,
+#loginMark a:hover {
+    text-decoration: underline;
+    color: rgb(64, 158, 255);
+}
+
+.equipment-item {
+    margin: 20px 0;
+    box-sizing: border-box;
+    border: 1px solid gray;
+}
+
+.equipment-item>.layui-col-xs3 {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.equipment-item>.layui-col-xs9 {
+    height: 100%;
+}
+
+.equipment-item>.layui-col-xs9>div {
+    padding-left: 30px;
+    height: 100%;
+}
+
+.equipment-item>.layui-col-xs9 h1 {
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.equipment-item>.layui-col-xs9 span {
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.equipment-item ul {
+    margin-top: 20px;
+}
+
+.equipment-item li {
+    text-align: left;
+    font-size: 15px;
+    line-height: 200%;
+}
+
+.equipment-item li::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background-color: #000;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.equipment-item li:nth-child(even) {
+    background-color: #eeeeee;
+    color: black;
+}
+
+#buttons-container {
+    text-align: left;
+}
+
+#buttons-container>button {
+    width: 200px;
+    background-color: rgb( 119, 136, 153);
+}
+
+#device-order-list {
+    background-color: rgb(238, 238, 238);
+}
+
+#device-order-list a {
+    color: black;
+    background-color: #fff;
+}
+
+#device-order-list>.layui-this>a {
+    background-color: #d2d2d2!important;
+    /* color: white; */
+}
+
+#device-order-list>.layui-this {
+    border: none !important;
+}
+
+.layui-tab-item {
+    padding: 0 10px 10px 10px;
+}
+
+.layui-nav-tree .layui-nav-item {
+    box-sizing: border-box;
+    padding: 0px 20px 15px 20px;
+}
+
+.layui-nav-tree .layui-nav-item>a {
+    border-radius: 5px;
+}
+
+.layui-nav-tree .layui-nav-item>a:hover {
+    opacity: .8;
+    color: white;
+}
+
+.layui-nav-tree .layui-this {
+    background-color: transparent;
+}
+
+.layui-nav-bar {
+    display: none;
+}

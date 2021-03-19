@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>留言列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+    <link rel="stylesheet" href="/src/css/font.css">
+    <link rel="stylesheet" href="/src/css/xadmin.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/src/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/src/js/xadmin.js"></script>
+    <link rel="stylesheet" href="/src/css/user-edit.css">
+</head>
+
+<body>
+    <div class="edit-form-div">
+        <form class="layui-form" id="editForm" lay-filter="editForm">
+            <div class="layui-row">
+                <div class="layui-col-xs4">
+                    <label class="layui-col-xs3">设备名称</label>
+                    <div class="layui-input-inline layui-col-xs9">
+                        <select name="deviceId" lay-verify="required" id="deviceList">
+                          </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="check">查询</button>
+                </div>
+                <div class="layui-col-xs4">
+                    <button type="button" class="layui-btn layui-btn-normal" onclick="editGrade();">修改试题分数</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <table class="layui-table">
+        <colgroup>
+            <col width="100">
+            <col>
+            <col>
+            <col width="100">
+            <col width="200">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>题目id</th>
+                <th>题目</th>
+                <th>选项</th>
+                <th>答案</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</body>
+
+</html>
+
+<script src="/src/js/utils.js"></script>
+<script>
+    (() => {
+        $.ajax({
+            url: baseURL + "/get/device/page",
+            data: {
+                "sort": ["id,asc"]
+            },
+            method: "get",
+            headers: HEADERS,
+            success(data) {
+                let deviceList = '<option value=""></option>';
+                data.data.forEach((element, index) => {
+                    deviceList += `<option value="${element.id}">${element.deviceName}</option>`
+                });
+                $("#deviceList").html(deviceList);
+                layui.use('form', () => {
+                    let form = layui.form;
+
+                    form.render('select');
+                })
+            }
+        });
+    })()
+
+    layui.use(['form', 'layer'], function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(check)', function(data) {
+            $.ajax({
+                url: baseURL + "/get/exam/device/id",
+                data: data.field,
+                headers: HEADERS,
+                success(res) {
+                    let tableDataRow = "";
+                    res.data.content.forEach(element => {
+                        tableDataRow += `<tr>
+                    <td>` + element.id + `</td>
+                    <td>` + element.subject + `</td>
+                    <td>` + (() => {
+                            let options = JSON.parse(element.options);
+                            let result = '';
+                            Object.keys(options).forEach(key => {
+                                result += key + ":" + options[key] + " ";
+                            });
+                            return result;
+                        })() + `</td>
+                    <td>` + element.answer + `</td>
+                    <td>
+                    <div class="layui-btn-group">
+                        <button type="button" class="layui-btn layui-btn-normal" onclick="dataDelete(this)">删除</button>
+                    </div>
+                </td>
+                  </tr>`
+                    });
+                    $("#tableBody").html(tableDataRow);
+                }
+            })
+            return false;
+        });
+    });
+
+    function dataDelete(node) {
+        let id = $(node).parent().parent().parent().find("td").eq(0).text();
+        $.ajax({
+            url: baseURL + "/delete/exam",
+            data: {
+                "examId": id
+            },
+            headers: HEADERS,
+            method: 'delete',
+            success(res) {
+                layer.alert("删除成功！", {
+                    icon: 6
+                }, function(index) {
+                    layer.close(index);
+                    window.location.reload();
+                });
+            }
+        });
+    }
+
+    function editGrade() {
+        $.ajax({
+            url: baseURL + "/get/grade/set",
+            headers: HEADERS,
+            success(res) {
+                layer.prompt({
+                    formType: 0,
+                    value: res.data,
+                    title: '请输入试题分数'
+                }, (value, index, elem) => {
+                    layer.close(index);
+                    //设定考试试题分数
+                    $.ajax({
+                        url: baseURL + '/update/grade/id',
+                        method: 'put',
+                        headers: HEADERS,
+                        data: {
+                            "grade": value
+                        },
+                        success(res) {
+                            layer.alert("修改成功！", {
+                                icon: 6
+                            }, function(index) {
+                                layer.close(index);
+                            });
+                        }
+                    });
+                });
+            }
+        })
+    }
+</script>

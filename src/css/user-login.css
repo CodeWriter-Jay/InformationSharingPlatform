@@ -1,0 +1,57 @@
+body {
+    background: #077bcb url(/src/images/login_background.jpg) no-repeat top center;
+    font-family: "Microsoft YaHei";
+}
+
+.logo {
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    text-align: center;
+    color: white;
+    font-size: larger;
+    margin-top: 30px;
+}
+
+.login-form {
+    margin-top: 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form>form {
+    width: 25%;
+    text-align: center;
+    /* background-color: pink; */
+}
+
+.layui-form-radio>i:hover,
+.layui-form-radioed>i {
+    color: #1E9FFF;
+}
+
+.layui-form>.layui-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* margin: 10px 0; */
+}
+
+#register-form {
+    display: none;
+    width: 50%;
+}
+
+.layui-form>.layui-row>div {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin: 10px 0;
+    padding: 0 10px;
+}

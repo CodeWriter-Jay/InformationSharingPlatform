@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/layui/css/layui.css">
+    <script src="/src/layui/layui.js"></script>
+    <link rel="stylesheet" href="/src/css/index.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <title>青海大学大型仪器设备共享平台</title>
+</head>
+
+<body>
+    <div class="nav-bar">
+        <div class="layui-row">
+            <div class="layui-col-xs5 layui-col-space30">
+                <div class="layui-col-xs6">
+                    <img src="src/images/logo.png" alt="青海大学Logo">
+                </div>
+                <div class="layui-col-xs6">
+                    <img src="src/images/计算机系图标.png" alt="计算机系logo">
+                </div>
+            </div>
+            <div class="layui-col-xs7">
+                <div class="layui-col-xs8">
+                    <h1>大型仪器设备共享平台</h1>
+                </div>
+                <div class="layui-col-xs4">
+                    <span class="search-bar" id="searchBar">
+                        <input type="text" placeholder="请输入设备名称" autocomplete="off" class="layui-input search-box">
+                        <button class="layui-btn search-btn" onclick="searchDevice();">搜索</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-fluid brief-intro">
+        <div class="layui-row layui-col-space30">
+            <div class="layui-col-xs3">
+                <h2>平台简介</h2>
+                <p>青海大学大型仪器设备共享平台是在青海大学计算机技术与应用系的筹备下， 通过“十一五”、“211工程”建设的一个大型仪器设备共享服务平台。 服务平台以现代信息技术为基础，集中计算机系所放置的大型仪器设备， 构建成一个方便管理、能够进行共享预约、操作简单的大型仪器设备共享服务平台。 平台的建立既响应了国家的政策又有效的减少了国家财政对大型仪器设备的， 同时能够减少闲置浪费重复购买的情况，对于管理者和普通用户来说提供了方便。
+                </p>
+                <div class="intro-detail">
+                    [
+                    <a href="javascript:;" onclick="switchToIntro();">
+                        <b>查看详情</b>
+                    </a>]
+                </div>
+            </div>
+            <div class="layui-col-xs6" style="display: flex;align-items: center;justify-content: center;">
+                <div class="layui-carousel" id="carousel">
+                    <div carousel-item>
+                        <img src="src/images/1_轮播.jpg" alt="">
+                        <img src="src/images/2_轮播.jpg" alt="">
+                        <img src="src/images/3_轮播.jpg" alt="">
+                        <img src="src/images/4_轮播.jpg" alt="">
+                        <img src="src/images/5_轮播.jpg" alt="">
+                        <img src="src/images/6_轮播.jpg" alt="">
+                        <img src="src/images/7_轮播.jpg" alt="">
+                        <img src="src/images/8_轮播.jpg" alt="">
+                        <img src="src/images/10_轮播.png" alt="">
+                        <img src="src/images/11_轮播.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs3">
+                <div class="login-btns" id="loginBtns">
+                    <h1>进入预约系统</h1>
+                    <a href="/html/adminPages/admin-login.html" class="layui-btn layui-btn-radius layui-btn-primary">管理员登录/注册</a>
+                    <a href="/html/userPages/user-login.html" class="layui-btn layui-btn-radius layui-btn-primary">用户登录/注册</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-tab layui-tab-brief bottom-nav-bar" lay-filter="bottomTabBar">
+        <ul class="layui-tab-title" id="tabBar">
+            <li class="layui-nav-item layui-this" lay-id="1">首页</li>
+            <li class="layui-nav-item" lay-id="2">平台简介</li>
+            <li class="layui-nav-item" lay-id="3">仪器信息</li>
+            <li class="layui-nav-item" lay-id="4">仪器预约</li>
+            <li class="layui-nav-item" lay-id="5">规章制度</li>
+            <li class="layui-nav-item" lay-id="6">使用指南</li>
+            <li class="layui-nav-item" lay-id="7" id="profile">个人中心</li>
+            <li class="layui-nav-item" lay-id="8">联系我们</li>
+        </ul>
+        <div class="layui-tab-content bottom-nav-content" style="padding: 0;">
+            <div class="layui-tab-item layui-show">
+                <blockquote class="layui-elem-quote layui-quote-nm">仪器信息
+                </blockquote>
+                <div class="layui-fluid equipment-info" id="equipment-info"></div>
+            </div>
+            <div class="layui-tab-item">
+                <h1>平台简介</h1>
+                <p>青海大学大型仪器设备共享平台是在青海大学计算机技术与应用系的筹备下，通过“十一五”、 “211工程”建设的一个大型仪器设备共享服务平台。服务平台以现代信息技术为基础， 集中计算机系所放置的大型仪器设备，构建成一个方便管理、能够进行共享预约、 操作简单的大型仪器设备共享服务平台。平台的建立既响应了国家的政策又有效的减少了国家财政对大型仪器设备的， 同时能够减少闲置浪费重复购买的情况，对于管理者和普通用户来说提供了方便。
+                </p>
+                <p>截止2020年10月，我校大型仪器设备40万元以上904台（套），50万元以上645台（套）， 100万元以上199台（套），200万元以上70台（套），500万元以上16台（套）, 1000万元以上3台（套）。 大型分析测试设备包括：球差校正环境透射电镜 、超级并行计算机系统 、300KV发射透射电子显微镜、 组合式质谱仪、新型高分辨场发射扫描电镜、综合物性测量系统、多光子激光共聚焦扫描显微镜、 质谱仪、材料试验机、流式细胞仪、X-射线双晶粉末衍射仪、液质联用仪、原子显微镜、扫描电子显微镜、
+                    激光光散射仪、AGILENT液质联用仪、实时数字仿真系统、多通道土壤碳通量量系统、地震模拟振动台、电子探针、 透射电镜、细胞培养工作站、全自动蛋白质印迹定量分析系统等。设备使用范围涵盖了材料、地质矿产、土木工程、 化学化工、轻工、农学、动物学、生物技术、物理等众多领域。仪器涵盖学科广，涵盖类别全。
+                </p>
+            </div>
+            <div class="layui-tab-item">
+                <blockquote class="layui-elem-quote layui-quote-nm">大型仪器列表
+                    <a href="javascript:;" onclick="switchToDetail(-1)">查看更多 &lt;&lt;</a>
+                </blockquote>
+                <div class="layui-fluid equipment-info" id="equipment-detail-info">
+                </div>
+            </div>
+            <div class="layui-tab-item" style="padding: 0;background-color: rgb(246,246,246);">
+                <div class="layui-row">
+                    <div class="layui-col-xs3" style="height: 100%;border: 2px solid #007DDB;" id="leftNav">
+                        <div class="layui-row" style="margin: 20px;">
+                            <h1>大型仪器资源导航</h1>
+                            <div class="layui-row" style="color:red">
+                                <h2>提示</h1>
+                                    <p style="text-indent: 2em;text-align: left;">如果进行仪器预约，请先进行安全测试，进行安全测试，提交完成并且达到60分，进行预约申请，等待通过就可以进行预约！</p>
+                            </div>
+                        </div>
+                        <ul class="layui-nav layui-nav-tree" lay-filter="deviceNavBar" style="width: 100%;display: inline-block;" id="device-order-list">
+                        </ul>
+                    </div>
+                    <div class="layui-col-xs9" style="display: inline-block;width: 75%;height: 100%;">
+                        <iframe id="sub-page" frameborder="0" scrolling="yes" style="width: 100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <h1>规章制度</h1>
+                <ul id="rules">
+                </ul>
+            </div>
+            <div class="layui-tab-item">
+                <h1>使用指南</h1>
+                <ul id="guide">
+                </ul>
+            </div>
+            <div class="layui-tab-item">
+                <h1>个人中心</h1>
+                <div>
+                    <iframe id="userInfo" height="600" frameborder="0" scrolling="yes" style="width: 100%;"></iframe>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <h1>联系我们</h1>
+                <p>地址：青海省西宁市城北区宁张路251号 青海大学计算机技术与应用系系楼101办公室
+                </p>
+                <p>邮编：811601</p>
+                <p>联系电话：0771-3271115</p>
+                <p>平台24小时热线：4000175665</p>
+                <p>邮箱：qhu319@qhu.edu.cn</p>
+            </div>
+
+        </div>
+    </div>
+
+    <marquee>
+        <span>青海大学计算机技术与应用系</span>
+    </marquee>
+</body>
+
+</html>
+<script src="/src/js/utils.js"></script>
+<script>
+    let user = "";
+    (function() {
+            //检验登录状态
+            user = getCookie("user");
+            if (user != "") {
+                user = JSON.parse(getCookie("user"));
+                let tmpHtml = `
+                    <h1>您好，${user.realName}</h1>
+                    <a href="javascript:;" onclick="userOperations(0);" class="layui-btn layui-btn-radius layui-btn-primary">个人中心</a>
+                    <a href="javascript:;" onclick="userOperations(1);" class="layui-btn layui-btn-radius layui-btn-primary">退出登录</a>
+                `
+                $("#loginBtns").html(tmpHtml);
+
+                $("#userInfo").attr("src", "./html/indexPages/profile-edit.html?id=" + user.id);
+
+                $.ajax({
+                    url: baseURL + "/get/device/page",
+                    data: {
+                        "sort": ["id,asc"]
+                    },
+                    method: "get",
+                    headers: HEADERS,
+                    success(data) {
+                        let orderList = "";
+                        data.data.forEach((element, index) => {
+                            orderList += `<li class="layui-nav-item${index==0?' layui-this':''}">
+                            <a href="javascript:;" device="${element.id}">${element.deviceName}</a></li>`
+                        });
+                        $("#device-order-list").html(orderList);
+                        $("#sub-page").attr("src", "./html/indexPages/device-order.html?id=" + data.data[0].id + "&userId=" + user.id);
+                        layui.use('element', function() {
+                            let element = layui.element;
+
+                            element.render('nav');
+                        });
+                    }
+                });
+            } else {
+                let orderList = `<div class="layui-row" id="loginMark">
+                    <h2><a href="/html/userPages/user-login.html">您还未登录账户，请先登录！</a></h2>
+                    </div>`;
+                $("#device-order-list").parent().parent().html(orderList);
+                $("#userInfo").parent().html(orderList);
+            }
+
+            //设备详情
+            $.ajax({
+                        url: baseURL + "/get/device/page",
+                        data: {
+                            "page": 0,
+                            "size": 8,
+                            "sort": ["id,asc"]
+                        },
+                        method: "get",
+                        headers: HEADERS,
+                        success(data) {
+                            let equipmentInfo = "",
+                                equipmentDetail = "";
+                            data.data.forEach((element, index) => {
+                                        if (index === 0 || index === 4) {
+                                            equipmentInfo += '<div class="layui-row layui-col-space20">';
+                                        }
+
+                                        equipmentInfo += `<div class="layui-col-xs3">
+                                <a class="equipment" href="javascript:;" onclick="switchToDetail(${element.id})">
+                                    <div>
+                                <img src="` + element.pictureAddress + `" alt="` + element.deviceName + `">
+                                </div>
+                                <h2>` + element.deviceName + `</h2>
+                            </a>
+                        </div>`
+                                        equipmentDetail += `<div class="layui-row layui-col-space30 equipment-item" id="${'device-'+element.id}">
+                        <div class="layui-col-xs3">
+                            <img src="${element.pictureAddress}" alt="${element.deviceName}">
+                        </div>
+                        <div class="layui-col-xs9">
+                            <div class="layui-row">
+                                <h1>${element.deviceName}<span class="layui-badge 
+                                    ${element.isOrder?'layui-bg-orange':'layui-bg-green'}">${element.isOrder?'不可用':'可用'}</span></h1>
+                                <ul>
+                                    ${
+                                        (() => {
+                                            let tmpStr = "";
+                                            tmpStr+=`<li>${"16点计算节点："+element.computeNode}</li>`
+                                            tmpStr+=`<li>${"系统总存储量："+element.totalStorage}</li>`
+                                            tmpStr+=`<li>${"GPU计算节点："+element.gpuNode}</li>`
+                                            tmpStr+=`<li>${"计算网络："+element.computeNetwork}</li>`
+                                            tmpStr+=`<li>${"管理网络："+element.managerNetwork}</li>`
+                                            tmpStr+=`<li>${"软件："+element.software}</li>`
+                                            return tmpStr;
+                                        })()
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="buttons-container" class="layui-col-xs12">
+                            <button type="button" class="layui-btn" onclick="downloadDeviceFile(${element.id},'${element.deviceName}');">查看仪器详情</button>
+                        </div>
+                    </div>`
+
+                    if (index === 3 || index === 7) {
+                        equipmentInfo += '</div>';
+                    }
+
+                });
+                $("#equipment-info").html(equipmentInfo);
+                $("#equipment-detail-info").html(equipmentDetail);
+            }
+        });
+
+        //规章制度
+        $.ajax({
+            url: baseURL + '/get/guide/rules',
+            headers: HEADERS,
+            data: {
+                "type": 1
+            },
+            success(res) {
+                let tmpHtml = '';
+                res.data.content.forEach(element => {
+                    tmpHtml += `<li>
+                        <a href="javascript:;" onclick="downloadFile(${element.id},'${element.fileName}');">${element.fileName + ' （'+element.createTime.split(' ')[0]+'）  <下载>'}</a>
+                    </li>`;
+                });
+                $("#rules").html(tmpHtml);
+            }
+        });
+
+        //使用指南
+        $.ajax({
+            url: baseURL + '/get/guide/rules',
+            headers: HEADERS,
+            data: {
+                "type": 2
+            },
+            success(res) {
+                let tmpHtml = '';
+                res.data.content.forEach(element => {
+                    tmpHtml += `<li>
+                        <a href="javascript:;" onclick="downloadFile(${element.id},'${element.fileName}');">${element.fileName + ' （'+element.createTime.split(' ')[0]+'）  <下载>'}</a>
+                    </li>`;
+                });
+                $("#guide").html(tmpHtml);
+            }
+        });
+    })();
+
+    layui.use('carousel', function() {
+        var carousel = layui.carousel;
+        //建造实例
+        carousel.render({
+            elem: '#carousel',
+            width: '80%',
+            arrow: 'hover',
+            interval: 1500
+        });
+    });
+
+    layui.use('element', function() {
+        var element = layui.element;
+
+        element.on('nav(deviceNavBar)', function(data) {
+            let targetId = $(data[0]).attr('device');
+            $("#sub-page").attr("src", "./html/indexPages/device-order.html?id=" + targetId + "&userId=" + user.id);
+        });
+
+        element.on('tab(bottomTabBar)', function(data) {
+            $('html, body').animate({
+                scrollTop: $("#tabBar").offset().top
+            }, 500);
+            if(data.index == 3){
+                $("#sub-page").attr("height", parseInt($("#leftNav").css("height").slice(0,-2))+200);
+            }
+        });
+    });
+
+    function switchToDetail(deviceId) {
+        if (deviceId != -1) {
+            layui.use('element', function() {
+                let element = layui.element;
+                element.tabChange('bottomTabBar', 3);
+                $('html, body').stop().animate({
+                    scrollTop: $('#device-' + deviceId).offset().top
+            }, 500);
+            });
+        } else {
+            layui.use('element', function() {
+                let element = layui.element;
+                element.tabChange('bottomTabBar', 4);
+            });
+        }
+    }
+
+    function switchToDeviceOrder(deviceId) {
+        layui.use('element', function() {
+            let element = layui.element;
+            element.tabChange('bottomTabBar', 4);
+            $("#device-order-list a").each((index, element) => {
+                if ($(element).attr("device") == deviceId) {
+                    $(element).click();
+                }
+            });
+        });
+    }
+
+    function switchToIntro() {
+        layui.use('element', function() {
+            let element = layui.element;
+            element.tabChange('bottomTabBar', 2);
+        });
+    }
+
+    function searchDevice() {
+        let searchStr = $("#searchBar input").val();
+        if (searchStr == "") return;
+        if (user == "") {
+            alert("请先登录账户！");
+            return;
+        }
+        $.ajax({
+            url: baseURL + '/get/device/name',
+            headers: HEADERS,
+            data: {
+                "name": searchStr
+            },
+            success(res) {
+                if (res.data.length == 0) {
+                    alert("未查询到相关信息");
+                } else {
+                    layui.use('element', function() {
+                        let element = layui.element;
+                        element.tabChange('bottomTabBar', 4);
+                    });
+                    $("#device-order-list a").each((index, element) => {
+                        if ($(element).attr("device") == res.data[0].id) {
+                            $(element).click();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function userOperations(flag) {
+        if (flag === 0) {
+            $("#profile").click();
+        } else if (flag === 1) {
+            clearAllCookie();
+            window.location.reload();
+        }
+    }
+
+    function downloadFile(id, fileName) {
+        layui.use('layer',()=>{
+            let layer = layui.layer;
+            layer.confirm('即将跳转到下载', {icon: 3, title:'提示'}, function(index){
+                // window.open(baseURL+'/download/file?id='+id);
+                window.location.href = baseURL+'/download/file?id='+id;
+                layer.close(index);
+            });
+        })
+    }
+
+    function downloadDeviceFile(id, fileName) {
+        layui.use('layer',()=>{
+            let layer = layui.layer;
+            layer.confirm('即将跳转到下载', {icon: 3, title:'提示'}, function(index){
+                // window.open(baseURL+'/download/device/info?id='+id);
+                window.location.href = baseURL+'/download/device/info?id='+id;
+                layer.close(index);
+            });
+        })
+    }
+</script>

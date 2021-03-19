@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>规章制度&指南列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+    <link rel="stylesheet" href="/src/css/font.css">
+    <link rel="stylesheet" href="/src/css/xadmin.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/src/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/src/js/xadmin.js"></script>
+    <link rel="stylesheet" href="/src/css/base.css">
+</head>
+
+<body>
+    <div class="x-body">
+        <div class="layui-btn-group">
+            <button type="button" class="layui-btn layui-btn-normal" id="uploadFile">
+                <i class="layui-icon">&#xe608;</i> 上传文件
+              </button>
+        </div>
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>文件id</th>
+                    <th>文件名</th>
+                    <th>存储地址</th>
+                    <th>上传时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+        <div style="text-align: center;">
+            <a class="layui-btn layui-btn-normal" onclick="prePage();">上一页</a>
+            <a class="layui-btn layui-btn-normal" onclick="nextPage();">下一页</a>
+            <br> 一共有
+            <span id="totalData"></span>条数据 一共有
+            <span id="totalPages"></span>页 当前是
+            <select onchange="selectPage(this);" style="width: 100px;height: 37px;" id="options">
+          </select>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script src="/src/js/utils.js"></script>
+<script>
+    let page = 0;
+    let fileType = 0;
+    let totalData = 0;
+    let totalPages = 0;
+    (function() {
+        page = getQueryVariable('page');
+        if (!page) page = 0;
+        page = parseInt(page);
+
+        fileType = getQueryVariable('fileType');
+        if (!fileType) {
+            $("body").html(`<h1>未知错误！</h1>`);
+            return;
+        }
+        fileType = parseInt(fileType);
+
+        $.ajax({
+            url: baseURL + "/get/guide/rules",
+            method: "get",
+            headers: HEADERS,
+            data: {
+                page,
+                "size": 8,
+                "sort": ["id,asc"],
+                "type": fileType
+            },
+            success(res) {
+                let tableDataRow = "";
+                res.data.content.forEach(element => {
+                    tableDataRow += `<tr>
+                    <td>` + element.id + `</td>
+                    <td>` + element.fileName + `</td>
+                    <td>` + element.address + `</td>
+                    <td>` + element.createTime + `</td>
+                    <td>
+                    <div class="layui-btn-group">
+                        <button type="button" class="layui-btn layui-btn-normal" onclick="dataEdit(this)">编辑</button>
+                        <button type="button" class="layui-btn layui-btn-normal" onclick="dataDelete(this)">删除</button>
+                    </div>
+                </td>
+                  </tr>`
+                });
+                $("#tableBody").html(tableDataRow);
+            }
+        });
+
+        $.ajax({
+            url: baseURL + "/get/guide/rules",
+            method: "get",
+            headers: HEADERS,
+            data: {
+                "sort": ["id,asc"],
+                "type": fileType
+            },
+            success(res) {
+                totalData = res.data.totalElements;
+                totalPages = Math.ceil(totalData / 8);
+                $("#totalData").text(totalData);
+                $("#totalPages").text(totalPages);
+                let optionsHtml = "";
+
+                for (let i = 0; i < Math.ceil(totalData / 8); i++) {
+                    optionsHtml += `<option value="${i}" text="第${i+1}页"
+                    ${page==i?"selected":""}>第${i+1}页</option>`
+                }
+                $("#options").html(optionsHtml);
+            }
+        })
+    })();
+
+    function dataEdit(node) {
+        let id = $(node).parent().parent().parent().find("td").eq(0).text();
+        $.ajax({
+            url: baseURL + "/get/guide/rules/id",
+            data: {
+                id
+            },
+            headers: HEADERS,
+            success(res) {
+                let file = res.data;
+                layer.prompt({
+                    formType: 0,
+                    value: file.fileName,
+                    title: '请输入文件名'
+                        // area: ['800px', '350px'] //自定义文本域宽高
+                }, (value, index, elem) => {
+                    file.fileName = value;
+                    layer.close(index);
+                    $.ajax({
+                        url: baseURL + '/update/guide/rules',
+                        method: 'put',
+                        headers: HEADERS,
+                        data: file,
+                        success(res) {
+                            layer.alert("修改成功！", {
+                                icon: 6
+                            }, function(index) {
+                                layer.close(index);
+                                window.location.reload();
+                            });
+                        }
+                    })
+                });
+            }
+        });
+    }
+
+    function dataDelete(node) {
+        let id = $(node).parent().parent().parent().find("td").eq(0).text();
+        $.ajax({
+            url: baseURL + "/delete/guide/rulse",
+            data: {
+                id
+            },
+            headers: HEADERS,
+            method: 'delete',
+            success(res) {
+                layer.alert("删除成功！", {
+                    icon: 6
+                }, function(index) {
+                    layer.close(index);
+                    window.location.reload();
+                });
+            }
+        });
+    }
+
+    function prePage() {
+        if (page == 0) return;
+        window.location.href = "./rules-list.html?page=" + (page - 1) + "&fileType=" + fileType;
+    }
+
+    function nextPage() {
+        if (page >= totalPages - 1) return;
+        window.location.href = "./rules-list.html?page=" + (page + 1) + "&fileType=" + fileType;
+    }
+
+    function selectPage(node) {
+        window.location.href = './rules-list.html?page=' + $(node).val() + "&fileType=" + fileType;
+    }
+
+    layui.use('upload', function() {
+        var upload = layui.upload;
+        let fileName = '';
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#uploadFile',
+            headers: HEADERS,
+            url: baseURL + '/upload/file',
+            accept: 'file',
+            auto: false,
+            choose: function(obj) {
+                //将每次选择的文件追加到文件队列
+                var files = obj.pushFile();
+
+                //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+                obj.preview(function(index, file, result) {
+                    layer.prompt({
+                        formType: 0,
+                        value: file.name,
+                        title: '请输入文件名'
+                            // area: ['800px', '350px'] //自定义文本域宽高
+                    }, function(value, index, elem) {
+                        fileName = value;
+                        layer.close(index);
+                        obj.resetFile(index, file, fileName); //重命名文件名，layui 2.3.0 开始新增
+                        obj.upload(index, file);
+                    });
+                });
+            },
+            done: function(res) {
+                let address = res.data;
+                $.ajax({
+                    url: baseURL + '/create/rules/guide',
+                    headers: HEADERS,
+                    method: 'post',
+                    data: {
+                        address,
+                        fileName,
+                        fileType
+                    },
+                    success(res) {
+                        layer.alert("添加成功！", {
+                            icon: 6
+                        }, function(index) {
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>

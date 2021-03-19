@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>预约列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+    <link rel="stylesheet" href="/src/css/font.css">
+    <link rel="stylesheet" href="/src/css/xadmin.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/src/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/src/js/xadmin.js"></script>
+    <link rel="stylesheet" href="/src/css/base.css">
+</head>
+
+<body>
+    <div class="x-body">
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>预约申请id</th>
+                    <th>设备名称</th>
+                    <th>审核时间</th>
+                    <th>审核状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
+
+<script src="/src/js/utils.js"></script>
+<script>
+    let userId = 0;
+    $(function() {
+        userId = getQueryVariable('userId');
+        if (!userId) userId = 0;
+        userId = parseInt(userId);
+
+        $.ajax({
+            url: baseURL + '/get/myself/order',
+            method: "get",
+            headers: HEADERS,
+            data: {
+                userId
+            },
+            success(res) {
+                let tableDataRow = "";
+                res.data.content.forEach(element => {
+                    tableDataRow += `<tr>
+                    <td>` + element.id + `</td>
+                    <td>` + element.deviceId.deviceName + `</td>
+                    <td>` + element.agreeTime + `</td>
+                    <td>` + (() => {
+                        if (element.isAgree == null) return '审核中';
+                        else if (element.isAgree) return '已通过';
+                        else return '未通过';
+                    })() + `</td>
+                    <td>
+                    <button type="button" class="layui-btn layui-btn-normal" onclick="dataDelete(this)">撤销申请</button>
+                </td>
+                  </tr>`
+                });
+                console.log(tableDataRow);
+                $("#tableBody").html(tableDataRow);
+            }
+        });
+    });
+
+    function dataDelete(node) {
+        let id = $(node).parent().parent().find("td").eq(0).text();
+        console.log(id);
+        $.ajax({
+            url: baseURL + "/delete/order/byid",
+            data: {
+                id
+            },
+            method: 'delete',
+            headers: HEADERS,
+            success(res) {
+                layer.alert('撤销成功！', {
+                    icon: 6
+                }, (index) => {
+                    layer.close(index);
+                    window.location.reload();
+                })
+            },
+            error(err) {
+                alert(err.responseJSON.message);
+                console.log(err);
+            }
+        });
+    }
+</script>

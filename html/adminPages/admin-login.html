@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/layui/css/layui.css">
+    <script src="/src/layui/layui.js"></script>
+    <link rel="stylesheet" href="/src/css/user-login.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <title>管理员登录</title>
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="logo">
+                <img src="/src/images/logo.png" alt="青海大学Logo">
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="title">
+                <h1>大型仪器设备共享平台
+                    <h2>
+                        管理员登录
+                    </h2>
+                </h1>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="login-form">
+                <form class="layui-form" id="login-form">
+                    <div class="layui-row">
+                        <label class="layui-col-xs3">账号</label>
+                        <div class="layui-input-inline layui-col-xs9">
+                            <input type="text" name="userName" required lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <label class="layui-col-xs3">密码</label>
+                        <div class="layui-input-inline layui-col-xs9">
+                            <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <h6 id="info"></h6>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs3"></div>
+                        <div class="layui-col-xs9" style="position: relative;">
+                            <button class="layui-btn layui-btn-normal layui-col-xs5" lay-submit lay-filter="loginForm">登录</button>
+                            <button type="reset" class="layui-btn layui-btn-primary layui-col-xs5" style="position: absolute;right: 10px;">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script src="/src/js/utils.js"></script>
+<script>
+    (function() {
+        let admin = getCookie("admin");
+        if (getCookie("admin") != "") {
+            window.location.href = "./admin-index.html";
+        }
+    })()
+
+    layui.use(['form', 'laydate'], function() {
+        var form = layui.form;
+        let laydate = layui.laydate;
+
+        //监听提交
+        form.on('submit(loginForm)', function(data) {
+            $.ajax({
+                url: baseURL + "/check/user",
+                data: data.field,
+                method: "post",
+                headers: HEADERS,
+                success(res) {
+                    if (res.status === 200 && res.data.role === "admin") {
+                        let admin = res.data;
+                        $("#info").text("登录成功！").css("color", "lightGreen");
+                        setCookie("admin", JSON.stringify(admin), 1);
+                        window.location.href = "./admin-index.html";
+                    } else if (res.status === 200 && res.data.role !== "admin") {
+                        $("#info").text('权限不足，请使用管理员账户登录！').css("color", "red");
+                    } else {
+                        $("#info").text(res.msg).css("color", "red");
+                    }
+                }
+            });
+            return false;
+        });
+
+        form.on('submit(registerForm)', function(data) {
+            data.field.role = "admin";
+            data.field.type = "管理员";
+            data.field.isEnabled = false;
+            $.ajax({
+                url: baseURL + "/insert/user",
+                data: data.field,
+                method: "post",
+                headers: {
+                    'Authorization': "bearer"
+                },
+                success(res) {
+                    layer.alert("注册成功！请登录！", {
+                        icon: 6
+                    }, function(index) {
+                        layer.close(index);
+                        window.location.reload();
+                    });
+                },
+                error(err) {
+                    alert("注册失败！请联系管理员！");
+                    console.log(err);
+                }
+            })
+            return false;
+        });
+
+        //自定义验证规则
+        form.verify({
+            repass: function(value) {
+                if ($('#password').val() != $('#repass').val()) {
+                    return '两次密码不一致';
+                }
+            }
+        });
+
+        laydate.render({
+            elem: '#inTime',
+            format: 'yyyy-MM-dd HH:mm:ss'
+        });
+        laydate.render({
+            elem: '#leaveTime',
+            format: 'yyyy-MM-dd HH:mm:ss'
+        });
+    });
+</script>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/layui/css/layui.css">
+    <script src="/src/layui/layui.js"></script>
+    <link rel="stylesheet" href="/src/css/user-login.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <title>用户登录</title>
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="logo">
+                <img src="/src/images/logo.png" alt="青海大学Logo">
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="title">
+                <h1>大型仪器设备共享平台
+                    <h2>
+                        用户登录
+                    </h2>
+                </h1>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="login-form">
+                <form class="layui-form" id="login-form">
+                    <div class="layui-row">
+                        <label class="layui-col-xs3">账号</label>
+                        <div class="layui-input-inline layui-col-xs9">
+                            <input type="text" name="userName" required lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <label class="layui-col-xs3">密码</label>
+                        <div class="layui-input-inline layui-col-xs9">
+                            <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <h6 id="loginInfo"></h6>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs3"></div>
+                        <div class="layui-col-xs9" style="position: relative;">
+                            <button class="layui-btn layui-btn-normal layui-col-xs5" lay-submit lay-filter="loginForm">登录</button>
+                            <button type="button" class="layui-btn layui-btn-primary layui-col-xs5" onclick="switchForm(1);" style="position: absolute;right: 10px;">注册</button>
+                        </div>
+                    </div>
+                </form>
+                <form class="layui-form" id="register-form" lay-filter="register-form">
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>账号</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="username" required lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>密码</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input id="password" type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label for="repass" class="layui-col-xs3">
+                                <span style="color:#FF5722;">*</span>确认密码
+                            </label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="password" id="repass" lay-verify="repass" required lay-verify="required" placeholder="确认密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>邮箱</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="email" lay-verify="email" placeholder="邮箱" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>姓名</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="realName" required lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>学号</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="stuId" required lay-verify="required" placeholder="学号" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3">性别</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="radio" name="sex" value="男" title="男" checked>
+                                <input type="radio" name="sex" value="女" title="女">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6"></div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>所在时间</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" readonly name="inTime" required lay-verify="required" placeholder="所在时间" autocomplete="off" class="layui-input" id="inTime">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>离开时间</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" readonly name="leaveTime" required lay-verify="required" placeholder="离开时间" autocomplete="off" class="layui-input" id="leaveTime">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3"><span style="color:#FF5722;">*</span>电话</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="phone" required lay-verify="required" placeholder="电话" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3">专业</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="major" placeholder="专业" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3">地址</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="address" placeholder="地址" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3">组织机构/学校院系</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="dept" placeholder="组织机构/学校院系" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3">课题组</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="researchGroup" placeholder="课题组" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <label class="layui-col-xs3">单位名称</label>
+                            <div class="layui-input-inline layui-col-xs9">
+                                <input type="text" name="unitName" placeholder="单位名称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <h6 id="registerInfo"></h6>
+                    </div>
+                    <div class="layui-row" style="display: flex;
+                    align-items: center;
+                    justify-content: center;">
+                        <button class="layui-btn layui-btn-normal layui-col-xs3" lay-submit lay-filter="registerForm">注册</button>
+                        <button type="reset" class="layui-btn layui-btn-primary layui-col-xs3" onclick="switchForm(0);">登录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script src="/src/js/utils.js"></script>
+<script>
+    (function() {
+        let user = getCookie("user");
+        if (getCookie("user") != "") {
+            window.location.href = "../../index.html";
+        }
+    })()
+
+    //Demo
+    layui.use(['form', 'laydate'], function() {
+        var form = layui.form;
+        var laydate = layui.laydate;
+
+        //监听提交
+        form.on('submit(loginForm)', function(data) {
+            $.ajax({
+                url: baseURL + "/check/user",
+                data: data.field,
+                method: "post",
+                headers: {
+                    'Authorization': "bearer"
+                },
+                success(res) {
+                    if (res.status === 500) {
+                        $("#loginInfo").text(res.msg).css("color", "red");
+                        return;
+                    }
+                    if (res.status === 200) {
+                        let user = res.data;
+                        $("#loginInfo").text("登录成功！").css("color", "lightGreen");
+                        setCookie("user", JSON.stringify(user), 1);
+                        window.location.href = "../../index.html";
+                    } else {
+                        $("#loginInfo").text(res.msg).css("color", "red");
+                    }
+                },
+                error(err) {
+                    console.log(err);
+                }
+            });
+            return false;
+        });
+
+        //监听提交
+        form.on('submit(registerForm)', function(data) {
+            data.field.role = "user";
+            data.field.type = "学生";
+            data.field.isEnabled = false;
+            console.log(data.field)
+            $.ajax({
+                url: baseURL + "/insert/user",
+                headers: {
+                    'Authorization': "bearer"
+                },
+                data: data.field,
+                method: "post",
+                success(res) {
+                    layer.alert("注册成功！请登录！", {
+                        icon: 6
+                    }, function(index) {
+                        layer.close(index);
+                        window.location.reload();
+                    });
+                },
+                error(err) {
+                    alert("注册失败！请联系管理员！");
+                    console.log(err);
+                }
+            })
+            return false;
+        });
+
+        //自定义验证规则
+        form.verify({
+            repass: function(value) {
+                if ($('#password').val() != $('#repass').val()) {
+                    return '两次密码不一致';
+                }
+            }
+        });
+
+        laydate.render({
+            elem: '#inTime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+            trigger: 'click'
+        });
+        laydate.render({
+            elem: '#leaveTime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+            trigger: 'click'
+        });
+    });
+
+    function switchForm(flag) {
+        if (flag === 1) {
+            $("#login-form").css("display", "none");
+            $("#register-form").css("display", "block");
+        } else {
+            $("#register-form").css("display", "none");
+            $("#login-form").css("display", "block");
+        }
+    }
+</script>

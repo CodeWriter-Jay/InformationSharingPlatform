@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>设备添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+    <link rel="stylesheet" href="/src/css/font.css">
+    <link rel="stylesheet" href="/src/css/xadmin.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/src/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/src/js/xadmin.js"></script>
+    <link rel="stylesheet" href="/src/css/base.css">
+</head>
+
+<body>
+    <div class="x-body">
+        <form class="layui-form" lay-filter="addForm">
+            <div class="layui-form-item">
+                <label for="deviceName" class="layui-form-label">设备名称
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="deviceName" name="deviceName" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="deviceAddress" class="layui-form-label">设备地址
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="deviceAddress" name="deviceAddress" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="computeNode" class="layui-form-label">16点计算节点
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="computeNode" name="computeNode" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="totalStorage" class="layui-form-label">系统总存储量
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="totalStorage" name="totalStorage" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="gpuNode" class="layui-form-label">GPU计算节点
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="gpuNode" name="gpuNode" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="computeNetwork" class="layui-form-label">计算网络
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="computeNetwork" name="computeNetwork" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="managerNetwork" class="layui-form-label">管理网络
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="managerNetwork" name="managerNetwork" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="software" class="layui-form-label">软件
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="software" name="software" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="deviceFile" class="layui-form-label">设备详情文件
+              </label>
+                <div class="layui-input-inline">
+                    <input type="text" readonly id="deviceFile" name="deviceFile" autocomplete="off" class="layui-input">
+                </div>
+                <button type="button" class="layui-btn layui-btn-normal" id="uploadInfoBtn">
+                    <i class="layui-icon">&#xe67c;</i>上传设备详情文件
+                  </button>
+            </div>
+            <div style="display: flex;align-items: flex-end;">
+                <div style="width: 200px;height: 200px;border: 1px solid black;margin-left: 110px;
+                margin-right: 20px;display: inline-flex;align-items: center;justify-content: center;">
+                    <img src="" alt="上传图片" id="uploadPic">
+                </div>
+                <button type="button" class="layui-btn layui-btn-normal" id="uploadBtn">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+              </button>
+            </div>
+            <div class="layui-form-item" style="margin-top:30px">
+                <label class="layui-form-label"></label>
+                <button class="layui-btn layui-btn-normal" lay-filter="add" lay-submit="" id="submitBtn">
+                  增加
+              </button>
+            </div>
+        </form>
+    </div>
+    <script src="/src/js/utils.js"></script>
+    <script>
+        let deviceId = -1;
+        let editFlag = false;
+        (() => {
+            deviceId = getQueryVariable('deviceId');
+            if (!deviceId) deviceId = -1;
+            if (deviceId != -1) {
+                deviceId = parseInt(deviceId);
+                editFlag = true;
+
+                $.ajax({
+                    url: baseURL + "/get/one/device",
+                    data: {
+                        "id": deviceId
+                    },
+                    headers: HEADERS,
+                    success(res) {
+                        layui.use('form', () => {
+                            let form = layui.form;
+                            form.val("addForm", res.data);
+                            console.log(res);
+                            $("#uploadPic").attr("src", res.data.pictureAddress);
+                            $("#submitBtn").text("修改");
+                        })
+                    }
+                });
+            }
+        })()
+        layui.use(['form', 'layer'], function() {
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer;
+
+
+            //监听提交
+            form.on('submit(add)', function(data) {
+                delete data.field.file;
+                data.field.pictureAddress = $("#uploadPic").attr("src");
+                let deviceInfos = [];
+                let letterArr = [];
+                $("#deviceInfo input").each((index, element) => {
+                    deviceInfos[index] = $(element).val();
+                });
+                data.field.deviceInfos = deviceInfos;
+
+                if (editFlag) {
+                    data.field.id = deviceId;
+                    console.log(data.field);
+                    let vo = data.field;
+                    $.ajax({
+                        url: baseURL + "/update/device",
+                        method: "put",
+                        data: JSON.stringify(vo),
+                        contentType: 'application/json',
+                        headers: HEADERS,
+                        success(res) {
+                            layer.alert("修改成功", {
+                                icon: 6
+                            }, function(index) {
+                                layer.close(index);
+                                parent.location.reload();
+                            });
+                        },
+                        error(err) {
+                            console.log(err);
+                        }
+                    })
+                } else {
+                    let vo = data.field;
+                    $.ajax({
+                        url: baseURL + "/insert/device",
+                        method: "post",
+                        data: JSON.stringify(vo),
+                        headers: HEADERS,
+                        contentType: 'application/json',
+                        success(res) {
+                            layer.alert("增加成功", {
+                                icon: 6
+                            }, function(index) {
+                                layer.close(index);
+                            });
+                        },
+                        error(err) {
+                            console.log(err);
+                        }
+                    })
+                }
+                return false;
+            });
+        });
+
+        layui.use('upload', function() {
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#uploadBtn' //绑定元素
+                    ,
+                url: 'http://47.114.104.163:8088/upload/file' //上传接口
+                    ,
+                accept: "images",
+                done: function(res) {
+                    //上传完毕回调
+                    $("#uploadPic").attr("src", res.data);
+                },
+                error: function(err) {
+                    //请求异常回调
+                    console.log(err);
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#uploadInfoBtn' //绑定元素
+                    ,
+                url: 'http://47.114.104.163:8088/upload/file' //上传接口
+                    ,
+                accept: "file",
+                done: function(res) {
+                    //上传完毕回调
+                    $("#deviceFile").val(res.data);
+                },
+                error: function(err) {
+                    //请求异常回调
+                    console.log(err);
+                }
+            });
+        });
+    </script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+
+</html>

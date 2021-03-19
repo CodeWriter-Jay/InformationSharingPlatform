@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+    <link rel="stylesheet" href="/src/css/font.css">
+    <link rel="stylesheet" href="/src/css/xadmin.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/src/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/src/js/xadmin.js"></script>
+    <link rel="stylesheet" href="/src/css/base.css">
+</head>
+
+<body>
+    <div class="x-body">
+        <div class="layui-btn-group">
+            <button type="button" class="layui-btn layui-btn-normal" onclick="addAdmin();">
+            <i class="layui-icon">&#xe608;</i> 添加管理员用户
+          </button>
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col width="170">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>用户id</th>
+                    <th>帐户名称</th>
+                    <th>用户角色</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>人员类型</th>
+                    <th>组织机构/学校院系</th>
+                    <th>学号/工号</th>
+                    <th>专业</th>
+                    <th>单位名称</th>
+                    <th>课题组</th>
+                    <th>所在时间</th>
+                    <th>离开时间</th>
+                    <th>邮箱</th>
+                    <th>电话</th>
+                    <th>地址</th>
+                    <th>是否被禁用</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+        <div style="text-align: center;">
+            <a class="layui-btn layui-btn-normal" onclick="prePage();">上一页</a>
+            <a class="layui-btn layui-btn-normal" onclick="nextPage();">下一页</a>
+            <br> 一共有
+            <span id="totalData"></span>条数据 一共有
+            <span id="totalPages"></span>页 当前是
+            <select onchange="window.location.href = './user-list.html?page=' + $(this).val();" style="width: 100px;height: 37px;" id="options">
+          </select>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script src="/src/js/utils.js"></script>
+<script>
+    let page = 0;
+    let totalData = 0;
+    let totalPages = 0;
+    (function() {
+        page = parseInt(getQueryVariable('page'));
+        if (!page) page = 0;
+
+        $.ajax({
+            url: baseURL + "/get/all/user",
+            method: "get",
+            headers: HEADERS,
+            data: {
+                page,
+                "size": 8,
+                "sort": ["id,asc"]
+            },
+            success(res) {
+                let tableDataRow = "";
+                res.data.content.forEach(element => {
+                    tableDataRow += `<tr>
+                    <td>` + element.id + `</td>
+                    <td>` + element.username + `</td>
+                    <td>` + element.role + `</td>
+                    <td>${element.realName}</td>
+                    <td>${element.sex}</td>
+                    <td>${element.type}</td>
+                    <td>${element.dept}</td>
+                    <td>${element.stuId}</td>
+                    <td>${element.major}</td>
+                    <td>${element.unitName}</td>
+                    <td>${element.researchGroup}</td>
+                    <td>${element.inTime}</td>
+                    <td>${element.leaveTime}</td>
+                    <td>${element.email}</td>
+                    <td>${element.phone}</td>
+                    <td>${element.address}</td>
+                    <td>` + (element.isEnable == true ? "是" : "否") + `</td>
+                    <td>
+                    <div class="layui-btn-group">
+                        <button type="button" class="layui-btn layui-btn-normal" onclick="dataEdit(this)">编辑</button>
+                        <button type="button" class="layui-btn layui-btn-normal" onclick="dataDelete(this)">删除</button>
+                    </div>
+                </td>
+                  </tr>`
+                });
+                $("#tableBody").html(tableDataRow);
+            }
+        });
+
+        $.ajax({
+            url: baseURL + "/get/all/user",
+            method: "get",
+            headers: HEADERS,
+            data: {
+                "sort": ["id,asc"]
+            },
+            success(res) {
+                totalData = res.data.totalElements;
+                totalPages = Math.ceil(res.data.content.length / 8);
+                $("#totalData").text(totalData);
+                $("#totalPages").text(totalPages);
+                let optionsHtml = "";
+
+                for (let i = 0; i < Math.ceil(res.data.content.length / 8); i++) {
+                    optionsHtml += `<option value="${i}" text="第${i+1}页"
+                    ${page==i?"selected":""}>第${i+1}页</option>`
+                }
+                $("#options").html(optionsHtml);
+            }
+        })
+    })();
+
+    function dataEdit(node) {
+        let id = $(node).parent().parent().parent().find("td").eq(0).text();
+
+        layer.open({
+            type: 2,
+            content: './user-edit.html?id=' + id,
+            title: "编辑用户信息",
+            area: ['1200px', '500px']
+        });
+    }
+
+    function dataDelete(node) {
+        let id = $(node).parent().parent().parent().find("td").eq(0).text();
+        $.ajax({
+            url: baseURL + "/delete/user/id",
+            data: {
+                id
+            },
+            headers: HEADERS,
+            method: 'delete',
+            success(res) {
+                if (res.status === 200) {
+                    layer.alert("删除成功！", {
+                        icon: 6
+                    }, function(index) {
+                        layer.close(index);
+                        window.location.reload();
+                    });
+                }
+            }
+        });
+    }
+
+    function prePage() {
+        if (page == 0) return;
+        window.location.href = "./user-list.html?page=" + (page - 1);
+    }
+
+    function nextPage() {
+        if (page >= totalPages - 1) return;
+        window.location.href = "./user-list.html?page=" + (page + 1);
+    }
+
+    function addAdmin() {
+        layer.open({
+            type: 2,
+            content: './admin-add.html',
+            title: "添加管理员用户",
+            area: ['1200px', '550px']
+        });
+    }
+</script>
